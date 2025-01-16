@@ -1,7 +1,6 @@
 package com.alibaba.bytekit.utils;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 
 import org.assertj.core.api.Assertions;
@@ -13,8 +12,6 @@ import com.alibaba.deps.org.objectweb.asm.Type;
 import com.alibaba.deps.org.objectweb.asm.tree.AbstractInsnNode;
 import com.alibaba.deps.org.objectweb.asm.tree.ClassNode;
 import com.alibaba.deps.org.objectweb.asm.tree.MethodNode;
-import com.alibaba.bytekit.utils.AsmUtils;
-import com.alibaba.bytekit.utils.VerifyUtils;
 
 public class AsmUtilsTest {
 
@@ -139,6 +136,20 @@ public class AsmUtilsTest {
     	Object object = VerifyUtils.instanceVerity(renameClass);
 
     	Assertions.assertThat(object.getClass().getName()).isEqualTo("com.test.Test.XXX");
+    }
+
+    @Test
+    public void testRenameClassClassNode() throws Exception {
+        ClassNode classNode = AsmUtils.loadClass(AsmUtilsTest.class);
+
+        classNode = AsmUtils.renameClass(classNode, "com/test/Test/FFFFFFF");
+
+        byte[] renameClass = AsmUtils.toBytes(classNode);
+
+        VerifyUtils.asmVerify(renameClass);
+        Object object = VerifyUtils.instanceVerity(renameClass);
+
+        Assertions.assertThat(object.getClass().getName()).isEqualTo("com.test.Test.FFFFFFF");
     }
 
     @Test
